@@ -1,0 +1,238 @@
+
+<script src="https://cdn.jsdelivr.net/clipboard.js/1.5.13/clipboard.min.js"></script>
+<link href='https://fonts.googleapis.com/css?family=Roboto:300,300i,500,700,500i,900'/>
+<style>
+body{margin:0;padding:0;font-family:Roboto,Arial,sans-serif}
+.shorten-box{font-size:100%;font-weight:500;color:#666!important;margin:0}
+#output{display:inline-block;}
+.shorten-text{display:inline-block;color:#141924;margin-right:5px;border:1px solid transparent;line-height:1;padding:5px 0;}
+#foo{display:inline-block;background:#f8f8f8;border:1px solid #d5d5d5;border-radius:3px;padding:5px 8px;margin:0;box-shadow: inset 0px 0px 1px rgba(0,0,0,.08);font-family:Consolas,Monaco,'Andale Mono',monospace;font-size:14px;white-space:initial;word-spacing:normal;word-break:normal;hyphens:none;color:#000;cursor:pointer;line-height:1;}
+.clear{clear:both}
+#output{position:relative}
+#output .btn {
+  -webkit-transition: opacity 0.3s ease-in-out;
+  -o-transition: opacity 0.3s ease-in-out;
+  transition: opacity 0.3s ease-in-out;
+  opacity: 0;
+  position: absolute;
+  right:0;
+  top: 0;
+}
+
+button.btn {
+  position: relative;
+  display: inline-block;
+  padding: 5px 5px 4px;
+  font-size: 13px;
+  font-weight: bold;
+  line-height: 20px;
+  color: #333;
+  white-space: nowrap;
+  vertical-align: middle;
+  cursor: pointer;
+  background-color: #eee;
+  background-image: linear-gradient(#fcfcfc, #eee);
+  border: 1px solid #d5d5d5;
+  border-radius:0 3px 3px 0;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-appearance: none;
+}
+
+img.clippy {
+  position: relative;
+  vertical-align: middle;
+  padding: 0;
+  background: none;
+  border: none;
+  -moz-box-shadow: 0;
+  -webkit-box-shadow: 0;
+  box-shadow: 0;
+}
+
+#output:hover .btn {
+  opacity: 1;
+}
+
+.tooltipped {
+  position: relative
+}
+
+.tooltipped:after {
+  position: absolute;
+  z-index: 1000000;
+  display: none;
+  padding: 5px 8px;
+  font: normal normal 11px/1.5 Helvetica, arial, nimbussansl, liberationsans, freesans, clean, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol";
+  color: #fff;
+  text-align: center;
+  text-decoration: none;
+  text-shadow: none;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: break-word;
+  white-space: pre;
+  pointer-events: none;
+  content: attr(aria-label);
+  background: rgba(0,0,0, 0.8);
+  border-radius: 3px;
+  -webkit-font-smoothing: subpixel-antialiased
+}
+
+.tooltipped:before {
+  position: absolute;
+  z-index: 1000001;
+  display: none;
+  width: 0;
+  height: 0;
+  color: rgba(0,0,0, 0.8);
+  pointer-events: none;
+  content: "";
+  border: 5px solid transparent
+}
+
+.tooltipped:hover:before,
+.tooltipped:hover:after,
+.tooltipped:active:before,
+.tooltipped:active:after,
+.tooltipped:focus:before,
+.tooltipped:focus:after {
+  display: inline-block;
+  text-decoration: none
+}
+
+.tooltipped-w:after {
+  right: 100%;
+  bottom: 50%;
+  margin-right: 5px;
+  -webkit-transform: translateY(50%);
+  -ms-transform: translateY(50%);
+  transform: translateY(50%)
+}
+
+.tooltipped-w:before {
+  top: 50%;
+  bottom: 50%;
+  left: -5px;
+  margin-top: -5px;
+  border-left-color: rgba(0,0,0, 0.8)
+}
+
+.tooltipped-w:after {
+  right: 100%;
+  bottom: 50%;
+  margin-right: 5px;
+  -webkit-transform: translateY(50%);
+  -ms-transform: translateY(50%);
+  transform: translateY(50%)
+}
+button.btn:focus,button.btn:active{outline:0}
+</style>
+
+<script>
+var urls = getQueryVariable("url");
+function getQueryVariable(variable) {
+	var query = window.location.search.substring(1);
+	var vars = query.split("&");
+	for (var i=0;i<vars.length;i++) {
+		var pair = vars[i].split("=");
+		if(pair[0] == variable){return pair[1];}
+	}
+	return(false);
+}
+</script>
+
+<div class='shorten-box'>
+<script>document.write('<input value="'+ urls +'" id="longurl" name="url" type="hidden"/> '); </script>
+<div class='shorten-text'>Share this with short URL:</div>
+<div id='output'></div>
+<div class='clear'></div>
+  </div>
+  
+
+<script>
+(function() { var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true; po.src = 'https://apis.google.com/js/client.js'; var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s); })();
+
+function makeShort() {
+    var longUrl = document.getElementById("longurl").value;
+    var request = gapi.client.urlshortener.url.insert({
+        'resource': {
+            'longUrl': longUrl
+        }
+    });
+    request.execute(function(response) {
+        if (response.id != null) {
+            str = "";
+            str += "<button class='btn' data-clipboard-snippet><img class='clippy' width='13' src='https://firebasestorage.googleapis.com/v0/b/kompijs.appspot.com/o/image%2Fclippy.svg?alt=media&token=ded490f4-41c8-4fb6-a52a-0f078167d21b' alt='Copy to clipboard'></button><div id='foo'>"+ response.id +"</div>";
+            document.getElementById("output").innerHTML = str;
+        } else {
+            alert("ERROR: creating short url \n" + response.error);
+        }
+    });
+}
+
+function load() {
+    gapi.client.setApiKey('AIzaSyAzyu1AhDhBhVr2eTKvAV254vhd7bH0bwI');
+    gapi.client.load('urlshortener', 'v1', function() {
+        document.getElementById("output").innerHTML = makeShort();
+    });
+}
+window.onload = load;
+</script>
+    <script>
+  var clipboard = new Clipboard('.btn', {
+    target: function() {
+      return document.querySelector('div#foo');
+    }
+  });
+
+  clipboard.on('success', function(e) {
+    console.log(e);
+  });
+
+  clipboard.on('error', function(e) {
+    console.log(e);
+  });
+
+var snippets = document.querySelectorAll('div#foo');
+var clipboardSnippets = new Clipboard('[data-clipboard-snippet]', {
+  target: function(trigger) {
+    return trigger.nextElementSibling;
+  }
+});
+clipboardSnippets.on('success', function(e) {
+  e.clearSelection();
+  showTooltip(e.trigger, 'Copied!');
+});
+clipboardSnippets.on('error', function(e) {
+  showTooltip(e.trigger, fallbackMessage(e.action));
+});
+
+var btns = document.querySelectorAll('.btn');
+for (var i = 0; i < btns.length; i++) {
+  btns[i].addEventListener('mouseleave', function(e) {
+    e.currentTarget.setAttribute('class', 'btn');
+    e.currentTarget.removeAttribute('aria-label');
+  });
+}
+
+function showTooltip(elem, msg) {
+  elem.setAttribute('class', 'btn tooltipped tooltipped-w');
+  elem.setAttribute('aria-label', msg);
+}
+
+function fallbackMessage(action) {
+  var actionMsg = '';
+  var actionKey = (action === 'cut' ? 'X' : 'C');
+  if (/iPhone|iPad/i.test(navigator.userAgent)) {
+    actionMsg = 'No support :(';
+  } else if (/Mac/i.test(navigator.userAgent)) {
+    actionMsg = 'Press ?-' + actionKey + ' to ' + action;
+  } else {
+    actionMsg = 'Press Ctrl-' + actionKey + ' to ' + action;
+  }
+  return actionMsg;
+}
+    </script>
